@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.facilities.mapper.CysFacilitiesMapper">
+    
+    <resultMap type="CysFacilities" id="CysFacilitiesResult">
+        <result property="facilitiesId"    column="facilitiesId"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="facilitiesName"    column="facilitiesName"    />
+        <result property="facilitiesPrice"    column="facilitiesPrice"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectCysFacilitiesVo">
+        select facilitiesId, dept_id, facilitiesName, facilitiesPrice, status from cys_facilities
+    </sql>
+
+    <select id="selectCysFacilitiesList" parameterType="CysFacilities" resultMap="CysFacilitiesResult">
+        <include refid="selectCysFacilitiesVo"/>
+        <where>  
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="facilitiesName != null  and facilitiesName != ''"> and facilitiesName like concat('%', #{facilitiesName}, '%')</if>
+            <if test="facilitiesPrice != null "> and facilitiesPrice = #{facilitiesPrice}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectCysFacilitiesByFacilitiesId" parameterType="Long" resultMap="CysFacilitiesResult">
+        <include refid="selectCysFacilitiesVo"/>
+        where facilitiesId = #{facilitiesId}
+    </select>
+        
+    <insert id="insertCysFacilities" parameterType="CysFacilities" useGeneratedKeys="true" keyProperty="facilitiesId">
+        insert into cys_facilities
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">dept_id,</if>
+            <if test="facilitiesName != null and facilitiesName != ''">facilitiesName,</if>
+            <if test="facilitiesPrice != null">facilitiesPrice,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">#{deptId},</if>
+            <if test="facilitiesName != null and facilitiesName != ''">#{facilitiesName},</if>
+            <if test="facilitiesPrice != null">#{facilitiesPrice},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCysFacilities" parameterType="CysFacilities">
+        update cys_facilities
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="facilitiesName != null and facilitiesName != ''">facilitiesName = #{facilitiesName},</if>
+            <if test="facilitiesPrice != null">facilitiesPrice = #{facilitiesPrice},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where facilitiesId = #{facilitiesId}
+    </update>
+
+    <delete id="deleteCysFacilitiesByFacilitiesId" parameterType="Long">
+        delete from cys_facilities where facilitiesId = #{facilitiesId}
+    </delete>
+
+    <delete id="deleteCysFacilitiesByFacilitiesIds" parameterType="String">
+        delete from cys_facilities where facilitiesId in 
+        <foreach item="facilitiesId" collection="array" open="(" separator="," close=")">
+            #{facilitiesId}
+        </foreach>
+    </delete>
+</mapper>

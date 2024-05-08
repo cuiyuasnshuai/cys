@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.registered.mapper.CysRegisteredMapper">
+    
+    <resultMap type="CysRegistered" id="CysRegisteredResult">
+        <result property="registeredId"    column="registered_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectCysRegisteredVo">
+        select registered_id, user_id, dept_id, create_id, create_time, status from cys_registered
+    </sql>
+
+    <select id="selectCysRegisteredList" parameterType="CysRegistered" resultMap="CysRegisteredResult">
+        <include refid="selectCysRegisteredVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectCysRegisteredByRegisteredId" parameterType="Long" resultMap="CysRegisteredResult">
+        <include refid="selectCysRegisteredVo"/>
+        where registered_id = #{registeredId}
+    </select>
+        
+    <insert id="insertCysRegistered" parameterType="CysRegistered" useGeneratedKeys="true" keyProperty="registeredId">
+        insert into cys_registered
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCysRegistered" parameterType="CysRegistered">
+        update cys_registered
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where registered_id = #{registeredId}
+    </update>
+
+    <delete id="deleteCysRegisteredByRegisteredId" parameterType="Long">
+        delete from cys_registered where registered_id = #{registeredId}
+    </delete>
+
+    <delete id="deleteCysRegisteredByRegisteredIds" parameterType="String">
+        delete from cys_registered where registered_id in 
+        <foreach item="registeredId" collection="array" open="(" separator="," close=")">
+            #{registeredId}
+        </foreach>
+    </delete>
+</mapper>

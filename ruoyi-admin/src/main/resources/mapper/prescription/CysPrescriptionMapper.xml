@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.prescription.mapper.CysPrescriptionMapper">
+    
+    <resultMap type="CysPrescription" id="CysPrescriptionResult">
+        <result property="prescriptionId"    column="prescriptionId"    />
+        <result property="userId"    column="userId"    />
+        <result property="releaseTime"    column="releaseTime"    />
+        <result property="createBy"    column="create_by"    />
+    </resultMap>
+
+    <sql id="selectCysPrescriptionVo">
+        select prescriptionId, userId, releaseTime, create_by from cys_prescription
+    </sql>
+
+    <select id="selectCysPrescriptionList" parameterType="CysPrescription" resultMap="CysPrescriptionResult">
+        <include refid="selectCysPrescriptionVo"/>
+        <where>  
+            <if test="userId != null "> and userId = #{userId}</if>
+            <if test="releaseTime != null "> and releaseTime = #{releaseTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectCysPrescriptionByPrescriptionId" parameterType="Long" resultMap="CysPrescriptionResult">
+        <include refid="selectCysPrescriptionVo"/>
+        where prescriptionId = #{prescriptionId}
+    </select>
+        
+    <insert id="insertCysPrescription" parameterType="CysPrescription" useGeneratedKeys="true" keyProperty="prescriptionId">
+        insert into cys_prescription
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">userId,</if>
+            <if test="releaseTime != null">releaseTime,</if>
+            <if test="createBy != null">create_by,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="releaseTime != null">#{releaseTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCysPrescription" parameterType="CysPrescription">
+        update cys_prescription
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">userId = #{userId},</if>
+            <if test="releaseTime != null">releaseTime = #{releaseTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+        </trim>
+        where prescriptionId = #{prescriptionId}
+    </update>
+
+    <delete id="deleteCysPrescriptionByPrescriptionId" parameterType="Long">
+        delete from cys_prescription where prescriptionId = #{prescriptionId}
+    </delete>
+
+    <delete id="deleteCysPrescriptionByPrescriptionIds" parameterType="String">
+        delete from cys_prescription where prescriptionId in 
+        <foreach item="prescriptionId" collection="array" open="(" separator="," close=")">
+            #{prescriptionId}
+        </foreach>
+    </delete>
+</mapper>

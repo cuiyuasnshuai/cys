@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.drugs.mapper.CysDrugsMapper">
+    
+    <resultMap type="CysDrugs" id="CysDrugsResult">
+        <result property="drugsId"    column="drugsId"    />
+        <result property="drugsName"    column="drugsName"    />
+        <result property="drugsPrice"    column="drugsPrice"    />
+        <result property="drugsKind"    column="drugsKind"    />
+        <result property="drugsCount"    column="drugsCount"    />
+        <result property="purchaserName"    column="purchaserName"    />
+        <result property="purchaserPhone"    column="purchaserPhone"    />
+    </resultMap>
+
+    <sql id="selectCysDrugsVo">
+        select drugsId, drugsName, drugsPrice, drugsKind, drugsCount, purchaserName, purchaserPhone from cys_drugs
+    </sql>
+
+    <select id="selectCysDrugsList" parameterType="CysDrugs" resultMap="CysDrugsResult">
+        <include refid="selectCysDrugsVo"/>
+        <where>  
+            <if test="drugsName != null  and drugsName != ''"> and drugsName like concat('%', #{drugsName}, '%')</if>
+            <if test="drugsPrice != null "> and drugsPrice = #{drugsPrice}</if>
+            <if test="drugsKind != null  and drugsKind != ''"> and drugsKind = #{drugsKind}</if>
+            <if test="drugsCount != null "> and drugsCount = #{drugsCount}</if>
+            <if test="purchaserName != null  and purchaserName != ''"> and purchaserName like concat('%', #{purchaserName}, '%')</if>
+            <if test="purchaserPhone != null  and purchaserPhone != ''"> and purchaserPhone = #{purchaserPhone}</if>
+        </where>
+    </select>
+    
+    <select id="selectCysDrugsByDrugsId" parameterType="Long" resultMap="CysDrugsResult">
+        <include refid="selectCysDrugsVo"/>
+        where drugsId = #{drugsId}
+    </select>
+        
+    <insert id="insertCysDrugs" parameterType="CysDrugs" useGeneratedKeys="true" keyProperty="drugsId">
+        insert into cys_drugs
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="drugsName != null and drugsName != ''">drugsName,</if>
+            <if test="drugsPrice != null">drugsPrice,</if>
+            <if test="drugsKind != null and drugsKind != ''">drugsKind,</if>
+            <if test="drugsCount != null">drugsCount,</if>
+            <if test="purchaserName != null and purchaserName != ''">purchaserName,</if>
+            <if test="purchaserPhone != null and purchaserPhone != ''">purchaserPhone,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="drugsName != null and drugsName != ''">#{drugsName},</if>
+            <if test="drugsPrice != null">#{drugsPrice},</if>
+            <if test="drugsKind != null and drugsKind != ''">#{drugsKind},</if>
+            <if test="drugsCount != null">#{drugsCount},</if>
+            <if test="purchaserName != null and purchaserName != ''">#{purchaserName},</if>
+            <if test="purchaserPhone != null and purchaserPhone != ''">#{purchaserPhone},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCysDrugs" parameterType="CysDrugs">
+        update cys_drugs
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="drugsName != null and drugsName != ''">drugsName = #{drugsName},</if>
+            <if test="drugsPrice != null">drugsPrice = #{drugsPrice},</if>
+            <if test="drugsKind != null and drugsKind != ''">drugsKind = #{drugsKind},</if>
+            <if test="drugsCount != null">drugsCount = #{drugsCount},</if>
+            <if test="purchaserName != null and purchaserName != ''">purchaserName = #{purchaserName},</if>
+            <if test="purchaserPhone != null and purchaserPhone != ''">purchaserPhone = #{purchaserPhone},</if>
+        </trim>
+        where drugsId = #{drugsId}
+    </update>
+
+    <delete id="deleteCysDrugsByDrugsId" parameterType="Long">
+        delete from cys_drugs where drugsId = #{drugsId}
+    </delete>
+
+    <delete id="deleteCysDrugsByDrugsIds" parameterType="String">
+        delete from cys_drugs where drugsId in 
+        <foreach item="drugsId" collection="array" open="(" separator="," close=")">
+            #{drugsId}
+        </foreach>
+    </delete>
+</mapper>

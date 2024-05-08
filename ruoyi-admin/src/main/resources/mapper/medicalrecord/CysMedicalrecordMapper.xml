@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.medicalrecord.mapper.CysMedicalrecordMapper">
+    
+    <resultMap type="CysMedicalrecord" id="CysMedicalrecordResult">
+        <result property="medicalRecordId"    column="medicalRecordId"    />
+        <result property="userId"    column="userId"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="medicalRecordContent"    column="medicalRecordContent"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectCysMedicalrecordVo">
+        select medicalRecordId, userId, create_by, medicalRecordContent, create_time from cys_medicalrecord
+    </sql>
+
+    <select id="selectCysMedicalrecordList" parameterType="CysMedicalrecord" resultMap="CysMedicalrecordResult">
+        <include refid="selectCysMedicalrecordVo"/>
+        <where>  
+            <if test="userId != null "> and userId = #{userId}</if>
+            <if test="medicalRecordContent != null  and medicalRecordContent != ''"> and medicalRecordContent = #{medicalRecordContent}</if>
+        </where>
+    </select>
+    
+    <select id="selectCysMedicalrecordByMedicalRecordId" parameterType="Long" resultMap="CysMedicalrecordResult">
+        <include refid="selectCysMedicalrecordVo"/>
+        where medicalRecordId = #{medicalRecordId}
+    </select>
+        
+    <insert id="insertCysMedicalrecord" parameterType="CysMedicalrecord" useGeneratedKeys="true" keyProperty="medicalRecordId">
+        insert into cys_medicalrecord
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">userId,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="medicalRecordContent != null">medicalRecordContent,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="medicalRecordContent != null">#{medicalRecordContent},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCysMedicalrecord" parameterType="CysMedicalrecord">
+        update cys_medicalrecord
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">userId = #{userId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="medicalRecordContent != null">medicalRecordContent = #{medicalRecordContent},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where medicalRecordId = #{medicalRecordId}
+    </update>
+
+    <delete id="deleteCysMedicalrecordByMedicalRecordId" parameterType="Long">
+        delete from cys_medicalrecord where medicalRecordId = #{medicalRecordId}
+    </delete>
+
+    <delete id="deleteCysMedicalrecordByMedicalRecordIds" parameterType="String">
+        delete from cys_medicalrecord where medicalRecordId in 
+        <foreach item="medicalRecordId" collection="array" open="(" separator="," close=")">
+            #{medicalRecordId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.resandmed.mapper.CysResandmedMapper">
+    
+    <resultMap type="CysResandmed" id="CysResandmedResult">
+        <result property="prescriptionId"    column="prescriptionId"    />
+        <result property="drugsId"    column="drugsId"    />
+        <result property="amount"    column="amount"    />
+    </resultMap>
+
+    <sql id="selectCysResandmedVo">
+        select prescriptionId, drugsId, amount from cys_resandmed
+    </sql>
+
+    <select id="selectCysResandmedList" parameterType="CysResandmed" resultMap="CysResandmedResult">
+        <include refid="selectCysResandmedVo"/>
+        <where>  
+            <if test="amount != null "> and amount = #{amount}</if>
+        </where>
+    </select>
+    
+    <select id="selectCysResandmedByPrescriptionId" parameterType="Long" resultMap="CysResandmedResult">
+        <include refid="selectCysResandmedVo"/>
+        where prescriptionId = #{prescriptionId}
+    </select>
+        
+    <insert id="insertCysResandmed" parameterType="CysResandmed">
+        insert into cys_resandmed
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="prescriptionId != null">prescriptionId,</if>
+            <if test="drugsId != null">drugsId,</if>
+            <if test="amount != null">amount,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="prescriptionId != null">#{prescriptionId},</if>
+            <if test="drugsId != null">#{drugsId},</if>
+            <if test="amount != null">#{amount},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCysResandmed" parameterType="CysResandmed">
+        update cys_resandmed
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="drugsId != null">drugsId = #{drugsId},</if>
+            <if test="amount != null">amount = #{amount},</if>
+        </trim>
+        where prescriptionId = #{prescriptionId}
+    </update>
+
+    <delete id="deleteCysResandmedByPrescriptionId" parameterType="Long">
+        delete from cys_resandmed where prescriptionId = #{prescriptionId}
+    </delete>
+
+    <delete id="deleteCysResandmedByPrescriptionIds" parameterType="String">
+        delete from cys_resandmed where prescriptionId in 
+        <foreach item="prescriptionId" collection="array" open="(" separator="," close=")">
+            #{prescriptionId}
+        </foreach>
+    </delete>
+</mapper>

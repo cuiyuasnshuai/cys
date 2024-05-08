@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.userinfo.mapper.CysUserinfoMapper">
+    
+    <resultMap type="CysUserinfo" id="CysUserinfoResult">
+        <result property="userId"    column="userId"    />
+        <result property="userName"    column="userName"    />
+        <result property="userIdNumber"    column="userIdNumber"    />
+        <result property="userArea"    column="userArea"    />
+        <result property="userPhone"    column="userPhone"    />
+        <result property="userSex"    column="userSex"    />
+    </resultMap>
+
+    <sql id="selectCysUserinfoVo">
+        select userId, userName, userIdNumber, userArea, userPhone, userSex from cys_userinfo
+    </sql>
+
+    <select id="selectCysUserinfoList" parameterType="CysUserinfo" resultMap="CysUserinfoResult">
+        <include refid="selectCysUserinfoVo"/>
+        <where>  
+            <if test="userName != null  and userName != ''"> and userName like concat('%', #{userName}, '%')</if>
+            <if test="userIdNumber != null  and userIdNumber != ''"> and userIdNumber = #{userIdNumber}</if>
+            <if test="userArea != null  and userArea != ''"> and userArea = #{userArea}</if>
+            <if test="userPhone != null  and userPhone != ''"> and userPhone = #{userPhone}</if>
+            <if test="userSex != null  and userSex != ''"> and userSex = #{userSex}</if>
+        </where>
+    </select>
+    
+    <select id="selectCysUserinfoByUserId" parameterType="Long" resultMap="CysUserinfoResult">
+        <include refid="selectCysUserinfoVo"/>
+        where userId = #{userId}
+    </select>
+        
+    <insert id="insertCysUserinfo" parameterType="CysUserinfo">
+        insert into cys_userinfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">userId,</if>
+            <if test="userName != null">userName,</if>
+            <if test="userIdNumber != null">userIdNumber,</if>
+            <if test="userArea != null">userArea,</if>
+            <if test="userPhone != null">userPhone,</if>
+            <if test="userSex != null">userSex,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="userIdNumber != null">#{userIdNumber},</if>
+            <if test="userArea != null">#{userArea},</if>
+            <if test="userPhone != null">#{userPhone},</if>
+            <if test="userSex != null">#{userSex},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCysUserinfo" parameterType="CysUserinfo">
+        update cys_userinfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userName != null">userName = #{userName},</if>
+            <if test="userIdNumber != null">userIdNumber = #{userIdNumber},</if>
+            <if test="userArea != null">userArea = #{userArea},</if>
+            <if test="userPhone != null">userPhone = #{userPhone},</if>
+            <if test="userSex != null">userSex = #{userSex},</if>
+        </trim>
+        where userId = #{userId}
+    </update>
+
+    <delete id="deleteCysUserinfoByUserId" parameterType="Long">
+        delete from cys_userinfo where userId = #{userId}
+    </delete>
+
+    <delete id="deleteCysUserinfoByUserIds" parameterType="String">
+        delete from cys_userinfo where userId in 
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+</mapper>
